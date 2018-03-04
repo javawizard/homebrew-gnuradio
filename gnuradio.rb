@@ -16,7 +16,7 @@ class Gnuradio < Formula
   # Merged into master, probably will be in next release
   patch do
     url "https://github.com/gnuradio/gnuradio/pull/1146.patch"
-    sha256 "fbf9842292cc1c2cfcf708d648d01c9a42fb98c5bba542a272dcdac504454d26"
+    sha256 "c4768a30cb675255485a8d12aa2c01ba7bb287d8a2e82088148df43715460701"
   end
 
   option "without-python", "Build without python support"
