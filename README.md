@@ -1,19 +1,39 @@
 # homebrew-gnuradio
 
-This is a collection of [Homebrew](https://github.com/mxcl/homebrew) formulas
-that makes it easier get GNURadio from source running on OS X.
+This is a collection of [Homebrew](https://github.com/mxcl/homebrew) formulas that makes it easier get gnuradio-companion or GNURadio with GUI from source running on OS X. 
 
 ## Installation
 
 These steps have been tested on macOS Sierra (10.12).
 
-This formula is depend on tap [cartr/qt4](https://github.com/cartr/homebrew-qt4) and shuold tap it before installation.
+### GNURadio
+
+This formula is depend on tap [cartr/qt4](https://github.com/cartr/homebrew-qt4) and should be taped before installation.
 
 ```bash
 $ brew tap cartr/qt4
 $ brew tap ttrftech/gnuradio
 $ brew install ttrftech/gnuradio/gnuradio --with-qt --with-pygtk
 ```
+
+### gr-osmosdr
+
+```bash
+$ brew install librtlsdr (optional)
+$ brew install libbladerf (optional)
+$ brew install SoapySDR (optional)
+$ brew install airspy (optional)
+$ brew install hackrf (optional)
+$ brew install ttrftech/gnuradio/gr-osmosdr
+```
+
+### gr-iqbal
+
+```bash
+$ brew install ttrftech/gnuradio/gr-iqbal
+```
+
+
 
 ## Acknowledgement
 
