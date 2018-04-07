@@ -260,3 +260,22 @@ index ad10363c1..00ae7c9aa 100644
      ${qt_gui_python_deps}
  )
  
+diff --git a/gr-qtgui/lib/CMakeLists.txt b/gr-qtgui/lib/CMakeLists.txt
+index b1ee58039..80a129429 100644
+--- a/gr-qtgui/lib/CMakeLists.txt
++++ b/gr-qtgui/lib/CMakeLists.txt
+@@ -169,9 +169,11 @@ endif(WIN32)
+ include(GrPython)
+ if(ENABLE_PYTHON)
+   add_definitions(-DENABLE_PYTHON)
+-  list(APPEND qtgui_libs
+-    ${PYTHON_LIBRARIES}
+-  )
++  if(APPLE)
++    list(APPEND qtgui_libs "-undefined dynamic_lookup")
++  else()
++    list(APPEND qtgui_libs ${PYTHON_LIBRARIES})
++  endif(APPLE)
+ endif(ENABLE_PYTHON)
+ 
+ add_definitions(-DQWT_DLL) #setup QWT library linkage
