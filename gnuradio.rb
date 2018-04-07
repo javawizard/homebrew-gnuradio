@@ -15,7 +15,7 @@ class Gnuradio < Formula
   # https://github.com/gnuradio/gnuradio/pull/1146
   # Merged into master, probably will be in next release
   patch do
-    url "https://github.com/gnuradio/gnuradio/pull/1146.patch"
+    url "https://github.com/gnuradio/gnuradio/pull/1146.patch?full_index=2"
     sha256 "c4768a30cb675255485a8d12aa2c01ba7bb287d8a2e82088148df43715460701"
   end
 
@@ -23,18 +23,16 @@ class Gnuradio < Formula
   option "with-qt", "Build with Qt support"
 
   depends_on "pkg-config" => :build
-  depends_on :python => :recommended if MacOS.version <= :snow_leopard
+  depends_on "python@2" => :recommended if MacOS.version <= :snow_leopard
   depends_on "boost"
   depends_on "cppunit"
-  depends_on "fftw"
   depends_on "gsl"
   depends_on "zeromq"
-  depends_on "numpy" if build.with? :python
-  depends_on "swig" => :build if build.with? :python
+  depends_on "numpy" if build.with? "python"
+  depends_on "swig" => :build if build.with? "python"
   depends_on "cmake" => :build
-  depends_on 'pyqt' if build.with? "qt"
-  # Try disabling pyqwt, see if it builds...
-  #depends_on 'pyqwt' if build.with? "qt"
+  depends_on 'pyqt@4' if build.with? "qt"
+  depends_on 'qwt-qt4' if build.with? "qt"
 
   # For documentation
   depends_on "doxygen" => [:build, :optional]
@@ -69,6 +67,8 @@ class Gnuradio < Formula
     sha256 "f042d4d66e2a58bd951a3eaf108303e862fad2975693bebf493931df9cd251a5"
   end
 
+  patch :DATA
+  
   def install
     ENV["CHEETAH_INSTALL_WITHOUT_SETUPTOOLS"] = "1"
     ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/python2.7/site-packages"
@@ -76,13 +76,22 @@ class Gnuradio < Formula
     res = %w[Markdown Cheetah lxml]
     res.each do |r|
       resource(r).stage do
-        system "python", *Language::Python.setup_install_args(libexec/"vendor")
+        system "python2", *Language::Python.setup_install_args(libexec/"vendor")
       end
     end
 
     resource("cppzmq").stage include.to_s
 
     args = std_cmake_args
+    args << "-DCMAKE_CXX_STANDARD=11"
+
+    python_prefix = `python2-config --prefix`.strip
+    if File.exist? "#{python_prefix}/Python"
+      # Python was compiled with --framework:
+      args << "-DPYTHON_LIBRARY='#{python_prefix}/Python'"
+      args << "-DPYTHON_INCLUDE_DIR='#{python_prefix}/Headers'"
+    end
+
     args << "-DGR_PKG_CONF_DIR=#{etc}/gnuradio/conf.d"
     args << "-DGR_PREFSDIR=#{etc}/gnuradio/conf.d"
 
@@ -183,15 +192,71 @@ class Gnuradio < Formula
 
         main()
       EOS
-      system "python", (testpath/"test.py")
+      system "python2", (testpath/"test.py")
 
       cd(testpath) do
         system "#{bin}/gr_modtool", "newmod", "test"
         cd("gr-test") do
           system "#{bin}/gr_modtool", "add", "-t", "general", "test_ff", "-l",
-                 "python", "-y", "--argument-list=''", "--add-python-qa"
+                 "python2", "-y", "--argument-list=''", "--add-python-qa"
         end
       end
     end
   end
 end
+__END__
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ca13431cd..5df7d7bb8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -278,7 +278,7 @@ include(GrBoost)
+ ########################################################################
+ # Enable python component
+ ########################################################################
+-find_package(PythonLibs 2)
++find_package(PythonLibs 2)
+ find_package(SWIG)
+ 
+ if(SWIG_FOUND)
+@@ -291,7 +291,6 @@ endif(SWIG_FOUND)
+ 
+ include(GrComponent)
+ GR_REGISTER_COMPONENT("python-support" ENABLE_PYTHON
+-    PYTHONLIBS_FOUND
+     SWIG_FOUND
+     SWIG_VERSION_CHECK
+ )
+diff --git a/gnuradio-runtime/CMakeLists.txt b/gnuradio-runtime/CMakeLists.txt
+index 766064250..9c644817e 100644
+--- a/gnuradio-runtime/CMakeLists.txt
++++ b/gnuradio-runtime/CMakeLists.txt
+@@ -36,7 +36,6 @@ include(GrComponent)
+ GR_REGISTER_COMPONENT("gnuradio-runtime" ENABLE_GNURADIO_RUNTIME
+     Boost_FOUND
+     ENABLE_VOLK
+-    PYTHONINTERP_FOUND
+ )
+ 
+ GR_SET_GLOBAL(GNURADIO_RUNTIME_INCLUDE_DIRS
+diff --git a/gr-qtgui/CMakeLists.txt b/gr-qtgui/CMakeLists.txt
+index ad10363c1..00ae7c9aa 100644
+--- a/gr-qtgui/CMakeLists.txt
++++ b/gr-qtgui/CMakeLists.txt
+@@ -26,7 +26,8 @@ find_package(Qt4 4.2.0 COMPONENTS QtCore QtGui)
+ 
+ find_package(Qwt)
+ 
+-find_package(PythonLibs 2)
++#find_package(PythonInterp 2)
++#find_package(PythonLibs 2)
+ 
+ include(GrPython)
+ GR_PYTHON_CHECK_MODULE("PyQt4" PyQt4 True PYQT4_FOUND)
+@@ -49,7 +50,6 @@ GR_REGISTER_COMPONENT("gr-qtgui" ENABLE_GR_QTGUI
+     ENABLE_GNURADIO_RUNTIME
+     ENABLE_GR_FFT
+     ENABLE_GR_FILTER
+-    PYTHONLIBS_FOUND
+     ${qt_gui_python_deps}
+ )
+ 
