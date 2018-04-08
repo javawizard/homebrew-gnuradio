@@ -23,7 +23,7 @@ class Gnuradio < Formula
   option "with-qt", "Build with Qt support"
 
   depends_on "pkg-config" => :build
-  depends_on "python@2" => :recommended if MacOS.version <= :snow_leopard
+  depends_on 'python@2'
   depends_on "boost"
   depends_on "cppunit"
   depends_on "gsl"
@@ -35,10 +35,10 @@ class Gnuradio < Formula
   depends_on 'qwt-qt4' if build.with? "qt"
 
   # For documentation
-  depends_on "doxygen" => [:build, :optional]
-  depends_on "sphinx-doc" => [:build, :optional]
+  depends_on "doxygen" => :optional
+  depends_on "sphinx-doc" => :optional
 
-  depends_on "uhd" => :recommended
+  depends_on "uhd" => :optional
   depends_on "sdl" => :optional
   depends_on "jack" => :optional
   depends_on "portaudio" => :recommended
