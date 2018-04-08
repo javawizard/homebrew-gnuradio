@@ -27,6 +27,18 @@ $ brew install hackrf (optional)
 $ brew install ttrftech/gnuradio/gr-osmosdr
 ```
 
+#### Ettus ESRP Support
+
+```bash
+$ brew install ttrftech/gnuradio/gr-osmosdr --with-uhd
+```
+
+#### ADALM-Pluto(ADI IIO) support 
+
+```bash
+$ brew install ttrftech/gnuradio/gr-osmosdr --with-iio
+```
+
 ### gr-iqbal
 
 ```bash
