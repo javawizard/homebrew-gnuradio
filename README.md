@@ -13,7 +13,7 @@ This formula is depend on tap [cartr/qt4](https://github.com/cartr/homebrew-qt4)
 ```bash
 $ brew tap cartr/qt4
 $ brew tap ttrftech/gnuradio
-$ brew install ttrftech/gnuradio/gnuradio --with-qt --with-pygtk
+$ brew install ttrftech/gnuradio/gnuradio --with-qt
 ```
 
 ### gr-osmosdr
@@ -25,12 +25,6 @@ $ brew install SoapySDR (optional)
 $ brew install airspy (optional)
 $ brew install hackrf (optional)
 $ brew install ttrftech/gnuradio/gr-osmosdr
-```
-
-#### Ettus ESRP Support
-
-```bash
-$ brew install ttrftech/gnuradio/gr-osmosdr --with-uhd
 ```
 
 #### ADALM-Pluto(ADI IIO) support 
