@@ -1,6 +1,7 @@
 require 'formula'
 
 class GrOsmosdr < Formula
+  version '0.1'
   homepage 'http://sdr.osmocom.org/trac/wiki/GrOsmoSDR'
 
   option 'with-fcd', 'Build with fcd support'
@@ -16,7 +17,7 @@ class GrOsmosdr < Formula
   end
   
   depends_on 'cmake' => :build
-  depends_on 'ttrftech/gnuradio/gnuradio'
+  depends_on 'gnuradio'
   depends_on 'uhd' => :optional
   depends_on 'librtlsdr' => :optional
   depends_on 'libbladerf' => :optional
